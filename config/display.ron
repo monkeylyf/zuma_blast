@@ -1,4 +1,4 @@
-{
+(
     title: "The Adventure of Microsoft Erge",
     dimensions: Some((800, 600)),
-}
+)
