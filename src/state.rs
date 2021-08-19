@@ -13,7 +13,7 @@ use amethyst::{
         World,
         WorldExt,
     },
-    renderer::{Camera, ImageFormat, SpriteSheetFormat, SpriteSheet, Texture},
+    renderer::{Camera, ImageFormat, SpriteSheetFormat, SpriteSheet, SpriteRender, Texture},
     ui::{
         Anchor,
         FontHandle,
@@ -110,12 +110,13 @@ fn init_maze(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut transform = Transform::default();
 
     transform.set_translation_xyz(50.0, 50.0, 0.0);
+    let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
 
     // Create maze entity.
     world
         .create_entity()
-        .with(Maze::new())
-        .with(sprite_sheet_handle)
+        //.with(Maze::new())
+        .with(sprite_render.clone())
         .with(transform)
         .build();
 }
@@ -133,8 +134,7 @@ fn init_title(world: &mut World) {
                 -30.0,
                 0.0,
                 440.0,
-                50.0,
-                ))
+                50.0,))
         .build();
 
     let font: FontHandle = world.read_resource::<Loader>().load(
@@ -143,7 +143,6 @@ fn init_title(world: &mut World) {
         (),
         &world.read_resource(),
     );
-
 
     world
         .create_entity()
@@ -155,8 +154,7 @@ fn init_title(world: &mut World) {
                 -40.0,
                 1.0,
                 440.0,
-                50.0,
-            ))
+                50.0,))
         .with(UiText::new(
                 font,
                 "Microsoft Erge".to_string(),
