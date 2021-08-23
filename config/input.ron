@@ -1,19 +1,28 @@
 (
     axes: {
-        "move_x": Emulated(
-            pos: Key(D),
-            neg: Key(A),
-        ),
-        "move_y": Emulated(
-            pos: Key(E),
-            neg: Key(Q),
-        ),
-        "move_z": Emulated(
-            pos: Key(S),
-            neg: Key(W),
-        ),
+        "move_x": Multiple([
+            Emulated(
+                pos: Key(H),
+                neg: Key(L)
+            ),
+            Emulated(
+                pos: Key(Left),
+                neg: Key(Right)
+            )
+        ]),
+        "move_y": Multiple([
+            Emulated(
+                pos: Key(K),
+                neg: Key(J)
+            ),
+            Emulated(
+                pos: Key(Up),
+                neg: Key(Down)
+            )
+        ])
     },
     actions: {
-
+        "select": [ [Mouse(Left)], [Key(Space)] ],
+        "unselect": [ [Key(Escape)] ],
     },
 )

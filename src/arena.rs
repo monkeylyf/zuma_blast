@@ -26,6 +26,11 @@ use amethyst::{
     window::ScreenDimensions,
 };
 
+use crate::cursor;
+
+pub const ARENA_HEIGHT: u16 = 9;
+pub const ARENA_WIDTH: u16 = 9;
+
 pub struct Arena;
 
 impl SimpleState for Arena {
@@ -39,9 +44,11 @@ impl SimpleState for Arena {
         let sprite_sheet_handle = init_sprites(world);
 
         world.register::<Maze>();
+        world.register::<cursor::Cursor>();
         world.register::<Handle<SpriteSheet>>();
 
-        init_maze(world, sprite_sheet_handle);
+        init_arena(world, sprite_sheet_handle.clone());
+        cursor::init_cursor(world, sprite_sheet_handle.clone());
         init_camera(world, &dimensions);
         init_title(world);
     }
@@ -70,7 +77,7 @@ fn init_sprites(world: &mut World) -> Handle<SpriteSheet> {
         let texture_storage = world.read_resource::<AssetStorage<Texture>>();
         loader.load(
             //"texture/maze.png",
-            "texture/pong_spritesheet.png",
+            "texture/tile.png",
             ImageFormat::default(),
             (),
             &texture_storage,
@@ -80,7 +87,7 @@ fn init_sprites(world: &mut World) -> Handle<SpriteSheet> {
     let loader = world.read_resource::<Loader>();
     let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
     loader.load(
-        "texture/pong_spritesheet.ron",
+        "texture/tile_spritesheet.ron",
         SpriteSheetFormat(texture_handle),
         (),
         &sprite_sheet_store,
@@ -106,19 +113,24 @@ impl Component for Maze {
 }
 
 
-fn init_maze(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
-    let mut transform = Transform::default();
+fn init_arena(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+    let red_tile_render = SpriteRender::new(sprite_sheet_handle.clone(), 0);
+    let select_tile_render = SpriteRender::new(sprite_sheet_handle, 3);
 
-    transform.set_translation_xyz(50.0, 50.0, 0.0);
-    let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
-
-    // Create maze entity.
-    world
-        .create_entity()
-        //.with(Maze::new())
-        .with(sprite_render.clone())
-        .with(transform)
-        .build();
+    for i in 0..ARENA_HEIGHT {
+        for j in 0..ARENA_WIDTH {
+            let x = (i as f32) * 50.0 + 50.0;
+            let y = (j as f32) * 50.0 + 50.0;
+            let mut transform = Transform::default();
+            transform.set_translation_xyz(x, y, 0.0);
+            world
+                .create_entity()
+                //.with(Maze::new())
+                .with(red_tile_render.clone())
+                .with(transform)
+                .build();
+        }
+    }
 }
 
 fn init_title(world: &mut World) {

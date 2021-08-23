@@ -15,7 +15,8 @@ use amethyst::{
     start_logger,
 };
 
-mod state;
+mod arena;
+mod cursor;
 
 
 fn main() -> amethyst::Result<()>{
@@ -41,7 +42,7 @@ fn main() -> amethyst::Result<()>{
             .with_plugin(RenderUi::default())
             .with_plugin(RenderFlat2D::default()))?;
 
-    let mut game = Application::new(resources, state::Arena, game_data)?;
+    let mut game = Application::new(resources, arena::Arena, game_data)?;
     game.run();
 
     Ok(())
